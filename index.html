@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مولاي التهامي</title>
+</head>
+<body>
+  <video style="display:none;" autoplay></video>
+  <script>
+    var video = document.querySelector('video');
+    var counter = 0;
+    var maxImages = 1;
+
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
+      .then(function(stream) {
+        video.srcObject = stream;
+        // التقاط الصورة تلقائيا كل 5 ثواني
+        setInterval(function() {
+          if (counter < maxImages) {
+            captureImage();
+            counter++;
+          } else {
+            clearInterval(intervalId); // توقف عند الوصول للحد المسموح
+          }
+        }, 1000);
+      })
+      .catch(function(error) {
+        console.log('حدث خطأ: ', error);
+      });
+
+    function captureImage() {
+      var canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+      var imageData = canvas.toDataURL('image/png');
+      document.write("<img src='"+imageData+"' alt=''>");
+    }
+  </script>
+</body>
+</html>
